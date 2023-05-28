@@ -1,4 +1,4 @@
--- Removendo banco de dados, usuários e schemas que possam ter o mesmo nome.
+-- Removendo os banco de dados, usuários e schemas que possam ter o mesmo nome.
 drop database if exists 						uvv;
 drop role if exists 							arthur_velemem
 drop schema if exists 							lojas;
@@ -11,7 +11,7 @@ CREATE USER arthur_velemem
 									ENCRYPETED PASSWORD 'computacao@raiz';
 
 		
---Criação do Banco de Dados.
+--Criação do Banco de Dados e definições do Banco de Dados.
 CREATE DATABASE uvv
  		OWNER = 						arthur_velemem
  		TEMPLATE = 						template0
@@ -19,20 +19,20 @@ CREATE DATABASE uvv
  		lc_collate = 						'pt_BR.UTF-8'
 		LC_CTYPE = 						'pt_BR.UTF-8'
 			
---Conectando o Banco de Dados "uvv".
+--Conectando ao Banco de Dados "uvv".
 \c 									uvv;
 
---Criando o esquema padrão da tabela.
+--Criando o esquema padrão da tabela lojas.
 CREATE SCHEMA 								lojas
 authorization								arthur_velemem;
 
---Ajustando o esquema da tabela.
+--Ajustando o esquema da tabela lojas.
 SET SEARCH_PATH TO 							lojas, "$user", public;
 SET SEARCH_PATH TO							lojas TO arthur_velemem;
 
---Criando o projeto lógico do Banco de Dados "Lojas UVV".
+--Criando o projeto do Banco de Dados "Lojas UVV".
 DROP TABLE IF EXISTS lojas CASCADE;
-CREATE TABLE lojas (
+CREATE TABLE 	lojas (
                 loja_id 						NUMERIC(38) NOT NULL,
                 nome 							VARCHAR(255) NOT NULL,
                 endereco_web 						VARCHAR(100),
@@ -58,8 +58,8 @@ COMMENT ON COLUMN lojas.logo_charset 					IS 				'Codificação da logo da loja'
 COMMENT ON COLUMN lojas.logo_ultima_atualizacao 			IS 				'Data da ultima atualização da logo da loja';
 
 DROP TABLE IF EXISTS produtos CASCADE;
-CREATE TABLE produtos (
-          		produto_id 					NUMERIC(38) NOT NULL,
+CREATE TABLE 	produtos (
+          	produto_id	 					NUMERIC(38) NOT NULL,
                 nome 							VARCHAR(255) NOT NULL,
                 preco_unitario 						NUMERIC(10,2) NOT NULL,
                 detallhes 						BYTEA,
@@ -82,7 +82,7 @@ COMMENT ON COLUMN produtos.imagem_ultima_atualizacao 			IS 				'Data da ultima a
 
 
 DROP TABLE IF EXISTS estoques CASCADE;
-CREATE TABLE estoques (
+CREATE TABLE 	estoques (
                 estoque_id 						NUMERIC(38) NOT NULL,
                 loja_id 						NUMERIC(38) NOT NULL,
                 produto_id 						NUMERIC(38) NOT NULL,
@@ -98,7 +98,7 @@ COMMENT ON COLUMN estoques.quantidade 					IS 				'Quantidade do produto no esto
 
 
 DROP TABLE IF EXISTS clientes CASCADE;
-CREATE TABLE clientes (
+CREATE TABLE 	clientes (
                 cliente_id 						NUMERIC(38) NOT NULL,
                 nome 							VARCHAR(255) NOT NULL,
                 email 							VARCHAR(255) NOT NULL,
@@ -117,7 +117,7 @@ COMMENT ON COLUMN clientes.telefone_2 					IS 				'Telefone reserva do cliente';
 COMMENT ON COLUMN clientes.telefone_3 					IS 				'Segundo telefone reserva do cliente';
 
 DROP TABLE IF EXISTS pedidos CASCADE;
-CREATE TABLE pedidos (
+CREATE TABLE	pedidos (
                 pedido_id 						NUMERIC(38) NOT NULL,
                 data_hora 						TIMESTAMP NOT NULL,
                 cliente_id 						NUMERIC(38) NOT NULL,
@@ -134,7 +134,7 @@ COMMENT ON COLUMN pedidos.status 					IS 				'Status do pedido';
 COMMENT ON COLUMN pedidos.loja_id 					IS 				'Id da loja';
 
 DROP TABLE IF EXISTS pedidos_itens CASCADE;
-CREATE TABLE pedidos_itens (
+CREATE TABLE 	pedidos_itens (
                 pedido_id 						NUMERIC(38) NOT NULL,
                 produto_id 						NUMERIC(38) NOT NULL,
                 numero_da_linha					 	NUMERIC(38) NOT NULL,
@@ -153,7 +153,7 @@ COMMENT ON COLUMN pedidos_itens.quantidade 				IS 				'Quantidade de pedidos';
 COMMENT ON COLUMN pedidos_itens.envio_id 				IS 				'Id de envio';
 
 DROP TABLE IF EXISTS envios CASCADE;
-CREATE TABLE envios (
+CREATE TABLE 	envios (
                 envio_id 						NUMERIC(38) NOT NULL,
                 loja_id 						NUMERIC(38) NOT NULL,
                 cliente_id 						NUMERIC(38) NOT NULL,
@@ -242,7 +242,7 @@ ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
 
---Criando as restiçoes de checagem.
+--Criando as restiçoes de checagem das (Alter tables).
 
 ALTER TABLE 								pedidos
 ADD CONSTRAINT 								cc_pedido_status
@@ -283,21 +283,3 @@ CHECK 									(telefone2 !~'-');
 ALTER TABLE 								cleintes
 ADD CONSTRAINT 								cc_telefone3_cleinte
 CHECK 									(telefone3 !~'-');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
